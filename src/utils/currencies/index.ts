@@ -63,9 +63,8 @@ export const getCurrency = async (currencyAddress: string): Promise<Currency> =>
           `Failed to initially fetch ${currencyAddress} currency details: ${error}`
         );
 
-        if (getNetworkSettings().whitelistedCurrencies.has(currencyAddress)) {
-          ({ name, symbol, decimals, metadata } =
-            getNetworkSettings().whitelistedCurrencies.get(currencyAddress)!);
+        if (getNetworkSettings().whitelistedCurrencies.indexOf(currencyAddress) > -1) {
+           ({ name, symbol, decimals, metadata } = await tryGetCurrencyDetails(currencyAddress))
         } else {
           // TODO: Although an edge case, we should ensure that when the job
           // finally succeeds fetching the details of a currency, we also do

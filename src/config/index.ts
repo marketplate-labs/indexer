@@ -1,3 +1,9 @@
+if(!process.env.WHITELISTED_CURRENCIES) {
+  throw new Error("please define WHITELISTED_CURRENCIES as a list of space-separated strings in your .env")
+}
+const parsedWhitelistedCurrencies = process.env.WHITELISTED_CURRENCIES.split(" ")
+
+
 export const config = {
   version: String(process.env.VERSION),
   port: Number(process.env.PORT),
@@ -73,4 +79,5 @@ export const config = {
   cipherSecret: String(process.env.CIPHER_SECRET),
 
   slackApiKeyWebhookUrl: String(process.env.SLACK_API_KEY_WEBHOOK_URL),
+  parsedWhitelistedCurrencies
 };
