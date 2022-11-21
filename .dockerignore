@@ -1,0 +1,9 @@
+# Git
+.git
+
+# Build
+dist/
+
+# Node JS
+node_modules
+npm-debug.log

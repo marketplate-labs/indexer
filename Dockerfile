@@ -1,12 +1,16 @@
-FROM node:16.13-slim
+FROM node:gallium-alpine
 
-ARG DATABASE_URL
-ARG PORT
-
-EXPOSE ${PORT}
+RUN apk update
+RUN apk add curl
 
 WORKDIR /indexer
-ADD . /indexer
-RUN yarn install
+
+COPY package.json yarn.lock ./
+
+RUN yarn
+
+ADD . .
+
 RUN yarn build
+
 CMD yarn start

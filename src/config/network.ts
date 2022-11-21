@@ -192,6 +192,21 @@ export const getNetworkSettings = (): NetworkSettings => {
           // Sound.xyz Contracts
           "0xbe8f3dfce2fcbb6dd08a7e8109958355785c968b",
         ],
+        whitelistedCurrencies: new Map([
+          [
+            "0xb4fbf271143f4fbf7b91a5ded31805e42b2208d6",
+            {
+              contract: "0xb4fbf271143f4fbf7b91a5ded31805e42b2208d6",
+              name: "WETH",
+              symbol: "WETH",
+              decimals: 18,
+              metadata: {
+                coingeckoCurrencyId: "ethereum",
+                image: "https://assets.coingecko.com/coins/images/279/large/ethereum.png"
+              }
+            }
+          ]
+        ]),
         onStartup: async () => {
           // Insert the native currency
           await Promise.all([
@@ -208,7 +223,7 @@ export const getNetworkSettings = (): NetworkSettings => {
                   'Ether',
                   'ETH',
                   18,
-                  '{}'
+                  '{"coingeckoCurrencyId": "ethereum", "image": "https://assets.coingecko.com/coins/images/279/large/ethereum.png"}'
                 ) ON CONFLICT DO NOTHING
               `
             ),
