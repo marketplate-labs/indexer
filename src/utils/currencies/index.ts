@@ -2,6 +2,7 @@ import { Interface } from "@ethersproject/abi";
 import { Contract } from "@ethersproject/contracts";
 import axios from "axios";
 
+import { config } from "@/config/index";
 import { idb } from "@/common/db";
 import { logger } from "@/common/logger";
 import { baseProvider } from "@/common/provider";
@@ -64,7 +65,7 @@ export const getCurrency = async (currencyAddress: string): Promise<Currency> =>
         );
 
         if (getNetworkSettings().whitelistedCurrencies.indexOf(currencyAddress) > -1) {
-           ({ name, symbol, decimals, metadata } = await tryGetCurrencyDetails(currencyAddress))
+          ({ name, symbol, decimals, metadata } = await tryGetCurrencyDetails(currencyAddress));
         } else {
           // TODO: Although an edge case, we should ensure that when the job
           // finally succeeds fetching the details of a currency, we also do
@@ -131,12 +132,23 @@ export const tryGetCurrencyDetails = async (currencyAddress: string) => {
 
   const coingeckoNetworkId = getNetworkSettings().coingecko?.networkId;
   if (coingeckoNetworkId) {
-    const result: { id?: string; image?: { large?: string } } = await axios
-      .get(
-        `https://api.coingecko.com/api/v3/coins/${coingeckoNetworkId}/contract/${currencyAddress}`,
-        { timeout: 10 * 1000 }
-      )
-      .then((response) => response.data);
+    const result: { id?: string; image?: { large?: string } } =
+      config.chainId === 1
+        ? await axios
+            .get(
+              `https://api.coingecko.com/api/v3/coins/${coingeckoNetworkId}/contract/${currencyAddress}`,
+              { timeout: 10 * 1000 }
+            )
+            .then((response) => response.data)
+        : {
+            id: "ethereum",
+            image: {
+              large:
+                symbol === "WETH"
+                  ? "https://assets.coingecko.com/coins/images/279/large/ethereum.png"
+                  : "https://assets.coingecko.com/coins/images/11596/large/ETHBN.png",
+            },
+          };
     if (result.id) {
       metadata.coingeckoCurrencyId = result.id;
     }
